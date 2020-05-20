@@ -1,3 +1,5 @@
+//the  code is for clint_1 
+
 #include <Adafruit_Sensor.h>           //In order to use DHT sensor we have to include this library first 
 #define BLYNK_PRINT Serial  
 //___________________Include Libraries_________________________________________________________
