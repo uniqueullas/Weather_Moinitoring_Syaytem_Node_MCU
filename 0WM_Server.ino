@@ -53,10 +53,15 @@ int h1;
 int h2;
 int h3;
 int p1;
+int c1;
+int mail;
 
 void loop() {
   sp();
   lp();
+  c1 = analogRead(A0);
+  Blynk.virtualWrite(10, c1);
+
   if (Serial.available() > 0) {
     String input;
     input = Serial.readStringUntil('\n');
@@ -140,11 +145,25 @@ void loop() {
 
   Blynk.run();
   BLYNK_WRITE();
+
+  if (mail != 0) {
+    String body = String("Mail button pressed \r\nTemprature1") + t1 +
+                  "\r\nHumidity1:" + h1 +
+                  "\r\npreausure1:" + p1 +
+                  "\r\nNon Coarbon:" + c1 +
+                  "\r\nTemprature2" + t2 +
+                  "\r\nHumidity2:" + h2 +
+                  "\r\nTemprature3" + t3 +
+                  "\r\nHumidity3: " + h3 +
+                  "Done";
+    Serial.println(String("Mail Sent...!" ) + body);
+    Blynk.email("venkateshvenki940@gmail.com", "Report", body);
+  }
 }
 BLYNK_WRITE(V2) {
   t2 = param.asFloat();
   // Serial.print(String("testing under loop t2: ") + t2);
-  Serial.println(" degC");
+  //Serial.println(" degC");
 }
 BLYNK_WRITE(V3) {
   h2 = param.asFloat();
@@ -155,6 +174,9 @@ BLYNK_WRITE(V4) {
 BLYNK_WRITE(V5) {
   h3 = param.asFloat();
 }
+BLYNK_WRITE(V9) {
+  mail = param.asInt();
+}
 
 void sp() {
   Serial.print(String("t1: ") + t1);
@@ -162,32 +184,39 @@ void sp() {
   Serial.print(String("p1: ") + p1);
   Serial.println(" Pa");
   Serial.print(String("h1: ") + h1);
-  Serial.println(" %");
+  Serial.println(" % ");
+  Serial.print(String("c1: ") + c1);
+  Serial.println(" % ");
   Serial.print(String("t2: ") + t2);
   Serial.println(" degC");
   Serial.print(String("h2: ") + h2);
-  Serial.println(" %");
+  Serial.println(" % ");
   Serial.print(String("t3: ") + t3);
   Serial.println(" degC");
   Serial.print(String("h3: ") + h3);
-  Serial.println(" %");
+  Serial.println(" % ");
 }
 
 void lp() {
   lcd.clear();
 
-  lcd.setCursor(4, 0);
-  lcd.print("T1:");
+  lcd.setCursor(0, 0);
+  lcd.print("T1: ");
   lcd.print(t1);
   lcd.print("*c");
 
+  lcd.setCursor(10, 0);
+  lcd.print("C1: ");
+  lcd.print(c1);
+  lcd.print(" % ");
+
   lcd.setCursor(0, 1);
-  lcd.print("H1:");
+  lcd.print("H1: ");
   lcd.print(h1);
-  lcd.print("%");
+  lcd.print(" % ");
 
   lcd.setCursor(10, 1);
-  lcd.print("P1:");
+  lcd.print("P1: ");
   lcd.print(p1 % 100);
   lcd.print("pa");
 
@@ -195,24 +224,24 @@ void lp() {
   lcd.clear();
 
   lcd.setCursor(0, 0);
-  lcd.print("T2:");
+  lcd.print("T2: ");
   lcd.print(t2);
   lcd.print("*c");
 
   lcd.setCursor(0, 1);
-  lcd.print("H2:");
+  lcd.print("H2: ");
   lcd.print(h2);
-  lcd.print("%");
+  lcd.print(" % ");
 
   lcd.setCursor(10, 0);
-  lcd.print("T3:");
+  lcd.print("T3: ");
   lcd.print(t3);
   lcd.print("*c");
 
   lcd.setCursor(10, 1);
-  lcd.print("H3:");
+  lcd.print("H3: ");
   lcd.print(h3);
-  lcd.print("%");
+  lcd.print(" % ");
 
   delay (3000);
 }
